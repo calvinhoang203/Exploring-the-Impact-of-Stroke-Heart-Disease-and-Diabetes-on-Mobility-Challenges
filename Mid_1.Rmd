@@ -1,0 +1,325 @@
+----------
+Midterm_1: Second version to fix error
+
+_________
+
+```{r}
+HD_data <- read.csv("~/Desktop/R- Script Folder/STA 160/heart_disease_health_indicators_BRFSS2015.csv")
+HD_data <- HD_data %>%
+  mutate(Diabetes = ifelse(Diabetes %in% c(1, 2), 1, Diabetes))
+```
+
+```{r}
+View(HD_data)
+```
+
+
+```{r}
+library(tidyr)
+library(ggplot2)
+
+
+HD_data$Combined <- with(HD_data, paste(Stroke, HeartDiseaseorAttack, Diabetes, sep = "_"))
+
+tail(HD_data)
+```
+```{r}
+names(HD_data)
+```
+
+
+```{r}
+
+
+HD_data$HighBP <- factor(HD_data$HighBP, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_HighBP <- HD_data %>%
+  count(Combined, HighBP) %>%
+  pivot_wider(names_from = HighBP, values_from = n, names_prefix = "HighBP_") %>%
+  mutate(Total = rowSums(across(starts_with("HighBP_")))) %>%
+  mutate(across(starts_with("HighBP_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_HighBP
+
+```
+
+
+```{r}
+
+
+HD_data$HighChol <- factor(HD_data$HighChol, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_HighChol <- HD_data %>%
+  count(Combined, HighChol) %>%
+  pivot_wider(names_from = HighChol, values_from = n, names_prefix = "HighChol_") %>%
+  mutate(Total = rowSums(across(starts_with("HighChol_")))) %>%
+  mutate(across(starts_with("HighChol_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_HighChol
+
+```
+
+
+```{r}
+
+
+HD_data$CholCheck <- factor(HD_data$CholCheck, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_CholCheck <- HD_data %>%
+  count(Combined, CholCheck) %>%
+  pivot_wider(names_from = CholCheck, values_from = n, names_prefix = "CholCheck_") %>%
+  mutate(Total = rowSums(across(starts_with("CholCheck_")))) %>%
+  mutate(across(starts_with("CholCheck_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_CholCheck
+
+```
+
+
+# Problem with BMI -> night need to divide them into 10 different group!
+```{r}
+
+contingency_table_BMI <- HD_data %>%
+  count(Combined, BMI) %>%
+  pivot_wider(names_from = BMI, values_from = n, names_prefix = "BMI_") %>%
+  mutate(Total = rowSums(across(starts_with("BMI_")))) %>%
+  mutate(across(starts_with("BMI_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_BMI
+
+```
+
+```{r}
+
+HD_data$Smoker <- factor(HD_data$Smoker, levels = c(0, 1), labels = c("No", "Yes"))
+
+contingency_table_Smoker <- HD_data %>%
+  count(Combined, Smoker) %>%
+  pivot_wider(names_from = Smoker, values_from = n, names_prefix = "Smoker_") %>%
+  mutate(Total = rowSums(across(starts_with("Smoker_")))) %>%
+  mutate(across(starts_with("Smoker_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Smoker
+
+```
+
+```{r}
+HD_data$PhysActivity <- factor(HD_data$PhysActivity, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_PhysActivity <- HD_data %>%
+  count(Combined, PhysActivity) %>%
+  pivot_wider(names_from = PhysActivity, values_from = n, names_prefix = "PhysActivity_") %>%
+  mutate(Total = rowSums(across(starts_with("PhysActivity_")))) %>%
+  mutate(across(starts_with("PhysActivity_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_PhysActivity
+
+```
+```{r}
+HD_data$Fruits <- factor(HD_data$Fruits, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_Fruits <- HD_data %>%
+  count(Combined, Fruits) %>%
+  pivot_wider(names_from = Fruits, values_from = n, names_prefix = "Fruits_") %>%
+  mutate(Total = rowSums(across(starts_with("Fruits_")))) %>%
+  mutate(across(starts_with("Fruits_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Fruits
+
+```
+```{r}
+HD_data$Veggies <- factor(HD_data$Veggies, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_Veggies <- HD_data %>%
+  count(Combined, Veggies) %>%
+  pivot_wider(names_from = Veggies, values_from = n, names_prefix = "Veggies_") %>%
+  mutate(Total = rowSums(across(starts_with("Veggies_")))) %>%
+  mutate(across(starts_with("Veggies_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Veggies
+
+```
+```{r}
+
+
+
+HD_data$HvyAlcoholConsump <- factor(HD_data$HvyAlcoholConsump, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_HvyAlcoholConsump <- HD_data %>%
+  count(Combined, HvyAlcoholConsump) %>%
+  pivot_wider(names_from = HvyAlcoholConsump, values_from = n, names_prefix = "HvyAlcoholConsump_") %>%
+  mutate(Total = rowSums(across(starts_with("HvyAlcoholConsump_")))) %>%
+  mutate(across(starts_with("HvyAlcoholConsump_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_HvyAlcoholConsump
+
+```
+
+
+
+```{r}
+
+
+HD_data$AnyHealthcare <- factor(HD_data$AnyHealthcare, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_AnyHealthcare <- HD_data %>%
+  count(Combined, AnyHealthcare) %>%
+  pivot_wider(names_from = AnyHealthcare, values_from = n, names_prefix = "AnyHealthcare_") %>%
+  mutate(Total = rowSums(across(starts_with("AnyHealthcare_")))) %>%
+  mutate(across(starts_with("AnyHealthcare_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_AnyHealthcare
+```
+```{r}
+
+
+HD_data$NoDocbcCost <- factor(HD_data$NoDocbcCost, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_NoDocbcCost <- HD_data %>%
+  count(Combined, NoDocbcCost) %>%
+  pivot_wider(names_from = NoDocbcCost, values_from = n, names_prefix = "NoDocbcCost_") %>%
+  mutate(Total = rowSums(across(starts_with("NoDocbcCost_")))) %>%
+  mutate(across(starts_with("NoDocbcCost_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_NoDocbcCost
+```
+
+```{r}
+
+contingency_table_GenHlth <- HD_data %>%
+  count(Combined, GenHlth) %>%
+  pivot_wider(names_from = GenHlth, values_from = n, names_prefix = "GenHlth_") %>%
+  mutate(Total = rowSums(across(starts_with("GenHlth_")))) %>%
+  mutate(across(starts_with("GenHlth_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_GenHlth
+```
+
+## I skipped Mental Health and Physical Health -> due to the number
+```{r}
+
+HD_data$DiffWalk <- factor(HD_data$DiffWalk, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_DiffWalk <- HD_data %>%
+  count(Combined, DiffWalk) %>%
+  pivot_wider(names_from = DiffWalk, values_from = n, names_prefix = "DiffWalk_") %>%
+  mutate(Total = rowSums(across(starts_with("DiffWalk_")))) %>%
+  mutate(across(starts_with("DiffWalk_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_DiffWalk
+```
+
+```{r}
+
+
+HD_data$Sex <- factor(HD_data$Sex, levels = c(0, 1), labels = c("Male", "Female"))
+contingency_table_Sex <- HD_data %>%
+  count(Combined, Sex) %>%
+  pivot_wider(names_from = Sex, values_from = n, names_prefix = "Sex_") %>%
+  mutate(Total = rowSums(across(starts_with("Sex_")))) %>%
+  mutate(across(starts_with("Sex_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Sex
+```
+
+## Also Skipped Age. Due to number
+```{r}
+
+HD_data$DiffWalk <- factor(HD_data$DiffWalk, levels = c(0, 1), labels = c("No", "Yes"))
+contingency_table_DiffWalk <- HD_data %>%
+  count(Combined, DiffWalk) %>%
+  pivot_wider(names_from = DiffWalk, values_from = n, names_prefix = "DiffWalk_") %>%
+  mutate(Total = rowSums(across(starts_with("DiffWalk_")))) %>%
+  mutate(across(starts_with("DiffWalk_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_DiffWalk
+```
+
+
+```{r}
+
+contingency_table_Education <- HD_data %>%
+  count(Combined, Education) %>%
+  pivot_wider(names_from = Education, values_from = n, names_prefix = "Education_") %>%
+  mutate(Total = rowSums(across(starts_with("Education_")))) %>%
+  mutate(across(starts_with("Education_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Education
+
+```
+
+```{r}
+
+contingency_table_Income <- HD_data %>%
+  count(Combined, Income) %>%
+  pivot_wider(names_from = Income, values_from = n, names_prefix = "Income_") %>%
+  mutate(Total = rowSums(across(starts_with("Income_")))) %>%
+  mutate(across(starts_with("Income_"), ~ . / Total * 100, .names = "{.col}_pecrcentage"))
+
+
+contingency_table_Income
+
+```
+
+```{r}
+#install.packages("shiny")
+library(shiny)
+library(ggplot2)
+
+# Define UI
+ui <- fluidPage(
+  titlePanel("Interactive Analysis"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("disease", "Select Disease Combination:",
+                  choices = c("Combined", "HighChol"), selected = "Combined"),
+      selectInput("smoker", "Select Smoker Status:",
+                  choices = c("Smoker", "Non-Smoker"), selected = "Smoker")
+    ),
+    mainPanel(
+      plotOutput("plot")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  
+  output$plot <- renderPlot({
+    HD_data$HighChol <- factor(HD_data$HighChol, levels = c(0, 1), labels = c("No", "Yes"))
+    HD_data$Combined <- factor(HD_data$Combined)
+    HD_data$Diabetes_Combined <- ifelse(HD_data$Diabetes == 1 | HD_data$Diabetes == 2, 1, 0)
+    HD_data$Combined <- with(HD_data, paste(Stroke, HeartDiseaseorAttack, Diabetes_Combined, sep = "_"))
+    HD_data$Smoker <- factor(HD_data$Smoker, levels = c(0, 1), labels = c("No", "Yes")) 
+    
+    # Filter data based on inputs
+    filtered_data <- switch(input$disease,
+                            "Combined" = HD_data,
+                            "HighChol" = subset(HD_data, HighChol == "Yes"))
+    
+    filtered_data <- switch(input$smoker,
+                            "Smoker" = filtered_data,
+                            "Non-Smoker" = subset(filtered_data, Smoker == "No"))
+    
+    # Plotting
+    ggplot(filtered_data, aes_string(x = input$disease, fill = "Smoker", group = "Smoker")) +
+      geom_bar(stat = "count", position = "stack") +
+      labs(title = "Distribution of Disease Combinations by Smoker Status",
+           x = "Disease Combination",
+           y = "Count",
+           fill = "Smoker Status")
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+
+```
+
+
